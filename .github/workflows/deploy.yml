@@ -1,0 +1,28 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main  # Or your default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up SSH key 🔑
+      run: |
+        echo "${{ secrets.EC2_SSH_PRIVATE_KEY_BASE64 }}" | base64 -d > web_project_github.pem
+        chmod 600 web_project_github.pem
+
+    - name: Deploy to EC2 🚀
+      run: |
+        scp -i web_project_github.pem -o StrictHostKeyChecking=no -r * ec2-user@ec2-user@3.86.204.10:/tmp/webproject
+        ssh -i web_project_github.pem -o StrictHostKeyChecking=no ec2-user@ec2-user@3.86.204.10 << 'EOF'
+          sudo mkdir -p /var/www/html
+          sudo cp -r /tmp/webproject/* /var/www/html/
+          sudo systemctl restart httpd
+        EOF
