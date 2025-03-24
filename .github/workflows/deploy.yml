@@ -20,8 +20,8 @@ jobs:
 
     - name: Deploy to EC2 🚀
       run: |
-        scp -i web_project_github.pem -o StrictHostKeyChecking=no -r * ec2-user@$3.86.204.10:/tmp/webproject
-        ssh -i web_project_github.pem -o StrictHostKeyChecking=no ec2-user@$3.86.204.10 << 'EOF'
+        scp -i web_project_github.pem -o StrictHostKeyChecking=no -r * ec2-user@3.86.204.10:/tmp/webproject
+        ssh -i web_project_github.pem -o StrictHostKeyChecking=no ec2-user@3.86.204.10 << 'EOF'
           sudo mkdir -p /var/www/html
           sudo cp -r /tmp/webproject/* /var/www/html/
           sudo systemctl restart httpd
